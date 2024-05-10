@@ -30,7 +30,7 @@ export class RecTableComponent implements AfterViewInit{
       this.dataSubscription = this.webService.data$.subscribe(
         data => this.data = new MatTableDataSource(data.specificRecommendations)
       );
-      console.log(this.data);
+
     }
   
     applyFilter(event: Event) {

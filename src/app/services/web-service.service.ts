@@ -13,6 +13,7 @@ export class WebServiceService {
   constructor(private http: HttpClient) { }
 
   getJsonData(url: string): Observable<any> {
+    console.log('getJsonData');
     return this.http.get<any>(url).pipe(
       tap(data => this.dataSubject.next(data))
     );
