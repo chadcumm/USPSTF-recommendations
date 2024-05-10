@@ -5,10 +5,18 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 
+import {animate, state, style, transition, trigger} from '@angular/animations';
 @Component({
   selector: 'app-rec-table',
   templateUrl: './rec-table.component.html',
-  styleUrls: ['./rec-table.component.css']
+  styleUrls: ['./rec-table.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed,void', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class RecTableComponent implements AfterViewInit{
 
@@ -21,16 +29,18 @@ export class RecTableComponent implements AfterViewInit{
 
     data: MatTableDataSource<any> | undefined;
     dataSubscription!: Subscription;
-    url = 'https://data.uspreventiveservicestaskforce.org/api/json?key=38TX6xUfkn6wfm6b7X9nAu';
 
     columnsToDisplay = ['title', 'grade'];
+    columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
+    expandedElement: any | null;
 
     ngOnInit() {
-      this.webService.getJsonData(this.url).subscribe();
-      this.dataSubscription = this.webService.data$.subscribe(
-        data => this.data = new MatTableDataSource(data.specificRecommendations)
+      this.dataSubscription = this.webService.getJsonData().subscribe(
+        data => {
+          this.data = new MatTableDataSource(data.specificRecommendations);
+          //this.data.sort = this.sort;
+        }
       );
-
     }
   
     applyFilter(event: Event) {
@@ -44,9 +54,9 @@ export class RecTableComponent implements AfterViewInit{
     }
 
     ngAfterViewInit() {
-      if (this.data) {
-      //this.data.paginator = this.paginator;
-      //this.data.sort = this.sort;
+      if (this.data && this.paginator && this.sort) {
+        this.data.paginator = this.paginator;
+        this.data.sort = this.sort;
       }
     }
 

@@ -1,21 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebServiceService {
-  private dataSubject: BehaviorSubject<any> = new BehaviorSubject(null);
-  data$: Observable<any> = this.dataSubject.asObservable();
-  
+  private url = 'https://data.uspreventiveservicestaskforce.org/api/json?key=38TX6xUfkn6wfm6b7X9nAu';
+
   constructor(private http: HttpClient) { }
 
-  getJsonData(url: string): Observable<any> {
-    console.log('getJsonData');
-    return this.http.get<any>(url).pipe(
-      tap(data => this.dataSubject.next(data))
-    );
+  getJsonData(): Observable<any> {
+    return this.http.get<any>(this.url);
   }
 }
